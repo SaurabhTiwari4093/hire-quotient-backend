@@ -6,9 +6,11 @@ app.use(cors())
 
 // app.use(express.json())
 
-app.get('/', (req, res) => {
-  res.send('HireQuotient backend')
-})
+// app.get('/', (req, res) => {
+//   res.send('HireQuotient backend')
+// })
+
+app.use(express.static("client"));
 
 const pdfRouter = require('./routes/pdf')
 app.use('/api/pdf', pdfRouter)
