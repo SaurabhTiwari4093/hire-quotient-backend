@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pdfParse = require('pdf-parse')
 const fs = require('fs');
-
+const keyword_extractor = require("keyword-extractor");
 
 //Get data from pdf
 router.get('/reader', async (req, res) => {
@@ -10,9 +10,18 @@ router.get('/reader', async (req, res) => {
         const buffer = fs.readFileSync("./testing/HackathonJDs/JD1.pdf");
         pdfParse(buffer).then((data) => {
             console.log(data);
+            const extraction_result =
+                keyword_extractor.extract(data.text, {
+                    language: "english",
+                    remove_digits: false,
+                    return_changed_case: true,
+                    remove_duplicates: true
+
+                });
+            
             res.status(200).json({
                 status: 200,
-                pdfText: data.text
+                pdfText: extraction_result
             })
         });
     }
