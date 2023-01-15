@@ -1,15 +1,17 @@
 const express = require('express');
 const router = express.Router();
+
 const pdfParse = require('pdf-parse')
-const fs = require('fs');
 const keyword_extractor = require("keyword-extractor");
 
+var multer = require('multer');
+var upload = multer();
+
 //Get data from pdf
-router.get('/reader', async (req, res) => {
+router.post('/parser', upload.single('PDF'), async (req, res) => {
     try {
-        const buffer = fs.readFileSync("./testing/HackathonJDs/JD1.pdf");
-        pdfParse(buffer).then((data) => {
-            console.log(data);
+        pdfParse(req.file.buffer).then((data) => {
+            // console.log(data);
             const extraction_result =
                 keyword_extractor.extract(data.text, {
                     language: "english",
@@ -18,7 +20,7 @@ router.get('/reader', async (req, res) => {
                     remove_duplicates: true
 
                 });
-            
+
             res.status(200).json({
                 status: 200,
                 pdfText: extraction_result
